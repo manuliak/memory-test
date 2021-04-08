@@ -58,13 +58,22 @@ a {
     border-bottom: 1px solid #eee;
 
     &__logo {
-        font-weight: bold;
+        display: flex;
+        align-items: center;
+
+        &-label {
+            margin-left: 5px;
+            font-size: 20px;
+            font-weight: 400;
+            background: #222;
+            color: #fff;
+            padding: 1px 9px;
+            border-radius: 6px;
+        }
     }
 }
 
 .test {
-    padding-top: 50px;
-
     &__grid {
         width: 300px;
         display: flex;
@@ -74,6 +83,10 @@ a {
         &-item {
             flex: 0 0 33.33333%;
         }
+    }
+
+    &__controls {
+        margin-top: 50px;
     }
 }
 
@@ -100,5 +113,53 @@ a {
 
     &--error {
         background: red;
+    }
+}
+
+.language-switch {
+    .active {
+        background: #222;
+        color: #fff;
+    }
+}
+
+.filter {
+    padding: 40px 0;
+
+    &-item {
+        padding: 20px 10px 30px;
+        border-radius: 4px;
+        background: #fafafa;
+
+        &__head {
+            padding-bottom: 10px;
+        }
+
+        &__field {
+            padding: 0 5px;
+        }
+    }
+
+    .rc-slider-mark-text-active {
+        color: #777;
+    }
+
+    .rc-slider-dot {
+        border-color: #777;
+    }
+    .rc-slider-dot-active {
+        border-color: #17a2b8;
+    }
+
+    .rc-slider-track {
+        background-color: #17a2b8;
+    }
+
+    .rc-slider-handle {
+        border-color: #17a2b8;
+    }
+
+    .rc-slider-rail {
+        background-color: #777;
     }
 }
