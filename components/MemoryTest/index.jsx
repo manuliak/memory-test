@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Button, Badge } from 'react-bootstrap'
-import Slider, { Range } from 'rc-slider'
+import Slider from 'rc-slider'
+import useSound from 'use-sound';
 
 import shuffleArray from '../../helpers/shuffleArray'
 import convertTime from '../../helpers/convertTime'
-import useSound from 'use-sound';
+import randomUniqueNum from '../../helpers/randomUniqueNum'
+import GridPlaceholder from './GridPlaceholder'
+import ResultModal from './ResultModal'
 
 export default function MemoryTest() {
-    // const [answerTime, setAnswerTime] = useState(10);
     const [timeToRemember, setTimeToRemember] = useState(1);
     const [digitsNumber, setDigitsNumber] = useState(5);
     const [visibleDigits, setVisibleDigits] = useState([]);
@@ -19,6 +21,7 @@ export default function MemoryTest() {
     const [finishTime, setFinishTime] = useState(null);
     const [gridSize, setGridSize] = useState(16);
     const [slider2Marks, setSlider2Marks] = useState({});
+    const [modalShow, setModalShow] = React.useState(false);
 
     const [errorSound] = useSound(
         './audio/incorrect.mp3',
@@ -30,30 +33,20 @@ export default function MemoryTest() {
         { volume: 0.25 }
     );
 
-    const digitsArray = [1,2,3,4,5,6,7,8,9];
-
-    function randomUniqueNum(range, outputCount) {
-
-        let arr = []
-        for (let i = 1; i <= range; i++) {
-          arr.push(i)
-        }
-      
-        let result = [];
-      
-        for (let i = 1; i <= outputCount; i++) {
-          const random = Math.floor(Math.random() * (range - i));
-          result.push(arr[random]);
-          arr[random] = arr[range - i];
-        }
-      
-        return result;
+    function compareNumbers(a, b) {
+        return a - b;
     }
 
     const startTest = () => {
-        const selected = randomUniqueNum(9, digitsNumber);
-        selected.sort();
-        const mixedArray = shuffleArray(digitsArray);
+        const gridMap = [];
+
+        for (let index = 1; index <= gridSize; index++) {
+            gridMap.push(index);
+        }
+
+        const selected = randomUniqueNum(gridSize, digitsNumber);
+        selected.sort(compareNumbers);
+        const mixedArray = shuffleArray(gridMap);
 
         const gridVisibleItems = [];
 
@@ -68,8 +61,8 @@ export default function MemoryTest() {
         }, timeToRemember * 1000)
     }
 
-    const checkAnswer = (digit) => {
-        if(buttonVisibilityStatus) return;
+    const checkAnswer = (digit, disabled) => {
+        if(buttonVisibilityStatus || disabled) return;
         
         setError(null);
 
@@ -97,6 +90,7 @@ export default function MemoryTest() {
 
             if(clickedButtons.length === visibleDigits.length) {
                 setFinishTime(Date.now());
+                setModalShow(true);
             }
         }
     }
@@ -110,6 +104,7 @@ export default function MemoryTest() {
         setFailures(0);
         setStartTime(null);
         setFinishTime(null);
+        setModalShow(false);
     }
     
     const marks1 = {
@@ -169,6 +164,14 @@ export default function MemoryTest() {
             <div className="filter">
                 <Row>
                     <Col>
+                        <div className="filter__header d-flex justify-content-between">
+                            <div className="filter__header-title">Filter</div>
+                            <div className="filter__header-title">F</div>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col lg={4}>
                         <div className="filter-item">
                             <div className="filter-item__head">
                                 <h4>
@@ -180,7 +183,7 @@ export default function MemoryTest() {
                             </div>
                         </div>
                     </Col>
-                    <Col>
+                    <Col lg={4}>
                         <div className="filter-item">
                             <div className="filter-item__head">
                                 <h4>
@@ -192,7 +195,7 @@ export default function MemoryTest() {
                             </div>
                         </div>
                     </Col>
-                    <Col>
+                    <Col lg={4}>
                         <div className="filter-item">
                             <div className="filter-item__head">
                                 <h4>
@@ -207,63 +210,60 @@ export default function MemoryTest() {
                 </Row>
             </div>
 
-            <div className="test__grid">
-                {
-                    grid.map(element => {
-                        const buttonData = visibleDigits.find(button => button.digit === element);
-
-                        return (
-                            <div className="test__grid-item" key={element}>
-                                {
-                                    buttonData ? (
-                                        <button
-                                            className={`
-                                                answer-button
-                                                ${!buttonVisibilityStatus ? ' answer-button--inverse' : ''}
-                                                ${buttonData.clickStatus && error !== buttonData.digit ? ' answer-button--hidden' : ''}
-                                                ${error === buttonData.digit ? ' answer-button--error' : ''}
-                                            `}
-                                            onClick={() => checkAnswer(element)}
-                                        >
-                                            <span className="answer-button__label">
-                                                {element}
-                                            </span>
-                                        </button>
-                                    ) : ''
-                                }
-                            </div>
-                        )
-                    })
-                }
-            </div>
-            <div className="test__controls d-flex justify-content-center">
-                {
-                    !startTime ? (
-                        <Button variant="dark" onClick={() => startTest()}><span>Start Test</span></Button>
-                    ) : ''
-                }
-                {
-                    startTime ? (
-                        <button onClick={() => cancelTest()}>
-                            <span>Cancel Test</span>
-                        </button>
-                    ) : ''
-                }
-            </div>
             {
                 startTime ? (
-                    <div>
-                        <p>Failures: {failures}</p>
+                    <div className={`test-grid test-grid--size-${Math.sqrt(gridSize)} ${modalShow ? 'test-grid--hidden' : ''}`}>
+                        {
+                            grid.map(element => {
+                                const buttonData = visibleDigits.find(button => button.digit === element);
+                                const status = buttonData && buttonData.clickStatus && error !== buttonData.digit;
+                                return (
+                                    <div className="test-grid__item" key={element}>
+                                        {
+                                            buttonData ? (
+                                                <button
+                                                    className={`
+                                                        answer-button
+                                                        ${!buttonVisibilityStatus ? ' answer-button--inverse' : ''}
+                                                        ${status ? ' answer-button--hidden' : ''}
+                                                        ${error === buttonData.digit ? ' answer-button--error' : ''}
+                                                    `}
+                                                    onClick={() => checkAnswer(element, status)}
+                                                >
+                                                    <span className="answer-button__label">
+                                                        {element}
+                                                    </span>
+                                                </button>
+                                            ) : ''
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
-                ) : ''
-            }
-            {
-                startTime && finishTime ? (
-                    <div>
-                        <p>Answer time: {convertTime(finishTime - startTime)}</p>
+                ) : (
+                    <div className="test__placeholder">
+                        <GridPlaceholder size={Math.sqrt(gridSize)} />
                     </div>
-                ) : ''
+                )
             }
+
+            <div className={`test__controls d-flex justify-content-center ${modalShow ? 'test__controls--hidden' : ''}`}>
+                {
+                    startTime ? (
+                        <Button variant="danger" className="btn-lg" onClick={() => cancelTest()}><span>Cancel Test</span></Button>
+                    ) : (
+                        <Button variant="dark" className="btn-lg" onClick={() => startTest()}><span>Start Test</span></Button>
+                    )
+                }
+            </div>
+
+            <ResultModal
+                show={modalShow}
+                failures={failures}
+                answerTime={convertTime(finishTime - startTime)}
+                onHide={() => cancelTest(false)}
+            />
         </div>
     )
 }
