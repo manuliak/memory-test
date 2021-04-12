@@ -6,7 +6,7 @@ export default function Home() {
     <div className="home">
       <Head>
         <title>Memory test</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <div className="home__content">

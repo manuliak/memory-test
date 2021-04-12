@@ -1,3 +1,5 @@
+@import "./_mixins/media";
+
 html,
 body {
     padding: 0;
@@ -36,12 +38,15 @@ a {
     }
 
     &__footer {
+        margin-top: 60px;
         padding: 15px;
     }
 }
 
 .developer-link {
     text-align: center;
+    font-size: 12px;
+    line-height: 1;
 
     a {
         text-decoration: underline;
@@ -132,12 +137,19 @@ a {
 }
 
 .filter {
-    padding: 40px 0;
+    padding: 30px 0;
 
     &-item {
         padding: 20px 10px 30px;
         border-radius: 4px;
         background: #fafafa;
+        margin-top: 20px;
+        box-shadow: 0px 0px 10px rgba(198, 198, 198, 0.5);
+        transition: all 0.4s ease;
+
+        @include responsiveMin(992px) {
+            margin-top: 0;
+        }
 
         &__head {
             padding-bottom: 10px;
@@ -146,6 +158,10 @@ a {
         &__field {
             padding: 0 5px;
         }
+    }
+
+    &__body {
+        padding: 10px;
     }
 
     .rc-slider-mark-text-active {
@@ -180,39 +196,110 @@ a {
     box-shadow: 0px 0px 0px 1px #c9c9c9;
     margin: 0 auto;
     transition: opacity 0.4s ease;
+    width: 100%;
 
     &--hidden {
         opacity: 0;
     }
 
-    &--size-3 {
-        width: 300px;
-    }
+    @include responsiveMin(768px) {
+        &--size-3 {
+            width: 300px;
+        }
 
-    &--size-4 {
-        width: 400px;
-    }
+        &--size-4 {
+            width: 400px;
+        }
 
-    &--size-5 {
-        width: 500px;
-    }
+        &--size-5 {
+            width: 500px;
+        }
 
-    &--size-6 {
-        width: 600px;
+        &--size-6 {
+            width: 600px;
+        }
     }
 
     &__item {
-        width: 100px;
-        height: 100px;
         border: 1px solid #c9c9c9;
         display: flex;
         justify-content: center;
         align-items: center;
+
+        @include responsiveMin(768px) {
+            width: 100px;
+            height: 100px;
+        }
     }
 }
 
 .result-modal {
+    .modal-dialog {
+        max-width: 400px;
+    }
+
     &__details {
-        padding: 40px 0;
+        padding: 20px 0;
+    }
+}
+
+.result-data {
+    flex: 0 0 50%;
+    text-align: center;
+
+    p {
+        margin: 0;
+    }
+
+    &:first-child {
+        border-right: 1px solid #dee2e6;
+    }
+
+    &__value {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        span {
+            margin-left: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        svg {
+            width: 20px;
+            height: auto;
+        }
+    }
+
+    &__label {
+        font-size: 18px;
+        padding-top: 10px;
+    }
+}
+
+.filter-toggle-button {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+
+    button {
+        display: flex;
+        align-items: center;
+
+        @include responsiveMax(767px) {
+            width: 100%;
+            justify-content: center;
+        }
+
+        span {
+            white-space: nowrap;
+            margin-right: 5px;
+        }
+
+        svg {
+            width: 20px;
+            height: auto;
+        }
     }
 }

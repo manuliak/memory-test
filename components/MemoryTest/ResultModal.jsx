@@ -1,4 +1,6 @@
 import { Modal, Button } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBomb, faStopwatch } from '@fortawesome/free-solid-svg-icons'
 
 export default function ResultModal({show, failures, answerTime, onHide}) {
     return (
@@ -16,11 +18,19 @@ export default function ResultModal({show, failures, answerTime, onHide}) {
         </Modal.Header>
         <Modal.Body>
             <div className="result-modal__details d-flex justify-content-between">
-                <div>
-                    <p>Failures: {failures}</p>
+                <div className="result-data">
+                    <p className="result-data__value">
+                        <FontAwesomeIcon icon={faBomb} size="xs" />
+                        <span>{failures}</span>
+                    </p>
+                    <p className="result-data__label">Failures</p>
                 </div>
-                <div>
-                    <p>Answer time: {answerTime}</p>
+                <div className="result-data">
+                    <p className="result-data__value">
+                        <FontAwesomeIcon icon={faStopwatch} size="xs" />
+                        <span>{answerTime}</span>
+                    </p>
+                    <p className="result-data__label">Answer time</p>
                 </div>
             </div>
         </Modal.Body>

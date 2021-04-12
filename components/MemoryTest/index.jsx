@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { Row, Col, Button, Badge } from 'react-bootstrap'
+import React, { useEffect, useState, useRef } from 'react'
+import { Row, Col, Button, Badge, Collapse } from 'react-bootstrap'
 import Slider from 'rc-slider'
 import useSound from 'use-sound';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSlidersH} from '@fortawesome/free-solid-svg-icons'
 
 import shuffleArray from '../../helpers/shuffleArray'
 import convertTime from '../../helpers/convertTime'
@@ -22,6 +25,13 @@ export default function MemoryTest() {
     const [gridSize, setGridSize] = useState(16);
     const [slider2Marks, setSlider2Marks] = useState({});
     const [modalShow, setModalShow] = React.useState(false);
+
+    const [layoutContainerWidth, setLayoutContainerWidth] = useState(0);
+
+    const [openFilter, setOpenFilter] = useState(false);
+
+
+    const layoutContainer = useRef(null);
 
     const [errorSound] = useSound(
         './audio/incorrect.mp3',
@@ -154,60 +164,85 @@ export default function MemoryTest() {
         setSlider2Marks(marks2);
     }
 
+    const updateDimensions = () => {
+        const width = layoutContainer.current && window.outerWidth <= 767 ? layoutContainer.current.offsetWidth : 0;
+        setLayoutContainerWidth(width);
+    }
+
     useEffect(() => {
         updateSlider2Markers(gridSize);
+        
+        updateDimensions();
+        window.addEventListener('resize', updateDimensions);
+
+        return () => window.removeEventListener('resize', updateDimensions);
     }, [])
 
     return (
-        <div className="test">
+        <div className="test" ref={layoutContainer}>
 
             <div className="filter">
-                <Row>
-                    <Col>
-                        <div className="filter__header d-flex justify-content-between">
-                            <div className="filter__header-title">Filter</div>
-                            <div className="filter__header-title">F</div>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col lg={4}>
-                        <div className="filter-item">
-                            <div className="filter-item__head">
-                                <h4>
-                                    Grid size <Badge variant="info">{marks1[gridSize]}</Badge>
-                                </h4>
+                <div className="filter__header">
+                    <Row>
+                        <Col>
+                            <div className="filter-toggle-button">
+                                <Button
+                                    variant={openFilter ? "secondary" : "light"}
+                                    onClick={() => setOpenFilter(!openFilter)}
+                                    aria-controls="filter-body"
+                                    aria-expanded={openFilter}
+                                >
+                                    <span>
+                                        Test options
+                                    </span>
+                                    <FontAwesomeIcon icon={faSlidersH} size="xs" />
+                                </Button>
                             </div>
-                            <div className="filter-item__field">
-                                <Slider min={9} max={36} marks={marks1} step={null} onChange={(value) => slider1Handler(value)} defaultValue={gridSize}/>
-                            </div>
-                        </div>
-                    </Col>
-                    <Col lg={4}>
-                        <div className="filter-item">
-                            <div className="filter-item__head">
-                                <h4>
-                                    Number of buttons <Badge variant="info">{digitsNumber}</Badge>
-                                </h4>
-                            </div>
-                            <div className="filter-item__field">
-                                <Slider min={3} max={gridSize} marks={slider2Marks} step={1} onChange={(value) => setDigitsNumber(value)} defaultValue={digitsNumber}/>
-                            </div>
-                        </div>
-                    </Col>
-                    <Col lg={4}>
-                        <div className="filter-item">
-                            <div className="filter-item__head">
-                                <h4>
-                                    Time to remember <Badge variant="info">{marks3[timeToRemember]}</Badge>
-                                </h4>
-                            </div>
-                            <div className="filter-item__field">
-                                <Slider min={1} max={10} marks={marks3} step={1} onChange={(value) => setTimeToRemember(value)} defaultValue={timeToRemember}/>
-                            </div>
-                        </div>
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </div>
+                <Collapse in={openFilter}>
+                    <div className="filter__body" id="filter-body">
+                        <Row>
+                            <Col lg={4}>
+                                <div className="filter-item">
+                                    <div className="filter-item__head">
+                                        <h5>
+                                            Grid size <Badge variant="info">{marks1[gridSize]}</Badge>
+                                        </h5>
+                                    </div>
+                                    <div className="filter-item__field">
+                                        <Slider min={9} max={36} marks={marks1} step={null} onChange={(value) => slider1Handler(value)} defaultValue={gridSize}/>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className="filter-item">
+                                    <div className="filter-item__head">
+                                        <h5>
+                                            Number of buttons <Badge variant="info">{digitsNumber}</Badge>
+                                        </h5>
+                                    </div>
+                                    <div className="filter-item__field">
+                                        <Slider min={3} max={gridSize} marks={slider2Marks} step={1} onChange={(value) => setDigitsNumber(value)} defaultValue={digitsNumber}/>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className="filter-item">
+                                    <div className="filter-item__head">
+                                        <h5>
+                                            Time to remember <Badge variant="info">{marks3[timeToRemember]}</Badge>
+                                        </h5>
+                                    </div>
+                                    <div className="filter-item__field">
+                                        <Slider min={1} max={10} marks={marks3} step={1} onChange={(value) => setTimeToRemember(value)} defaultValue={timeToRemember}/>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </div>
+                </Collapse>
             </div>
 
             {
@@ -217,8 +252,13 @@ export default function MemoryTest() {
                             grid.map(element => {
                                 const buttonData = visibleDigits.find(button => button.digit === element);
                                 const status = buttonData && buttonData.clickStatus && error !== buttonData.digit;
+
+                                const itemSize = layoutContainerWidth / Math.sqrt(gridSize);
+
+                                const styles = layoutContainerWidth > 0 ? {width: `${itemSize}px`, height: `${itemSize}px`} : {}
+
                                 return (
-                                    <div className="test-grid__item" key={element}>
+                                    <div className="test-grid__item" key={element} style={styles}>
                                         {
                                             buttonData ? (
                                                 <button
@@ -243,7 +283,7 @@ export default function MemoryTest() {
                     </div>
                 ) : (
                     <div className="test__placeholder">
-                        <GridPlaceholder size={Math.sqrt(gridSize)} />
+                        <GridPlaceholder containerWidth={layoutContainerWidth} size={Math.sqrt(gridSize)} />
                     </div>
                 )
             }
