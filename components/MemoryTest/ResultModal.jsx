@@ -1,11 +1,24 @@
+import React, { useContext } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBomb, faStopwatch } from '@fortawesome/free-solid-svg-icons'
 
-export default function ResultModal({show, failures, answerTime, onHide}) {
+import convertTime from '../../helpers/convertTime'
+
+import { TestContext } from '../../context/test/testContext'
+
+export default function ResultModal() {
+  const {
+    modalShow,
+    cancelTest,
+    failures,
+    startTime,
+    finishTime,
+  } = useContext(TestContext);
+
     return (
       <Modal
-        show={show}
+        show={modalShow}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -28,14 +41,14 @@ export default function ResultModal({show, failures, answerTime, onHide}) {
                 <div className="result-data">
                     <p className="result-data__value">
                         <FontAwesomeIcon icon={faStopwatch} size="xs" />
-                        <span>{answerTime}</span>
+                        <span>{convertTime(finishTime - startTime)}</span>
                     </p>
                     <p className="result-data__label">Answer time</p>
                 </div>
             </div>
         </Modal.Body>
         <Modal.Footer >
-          <Button variant="dark" className="btn-lg" onClick={onHide}>Close</Button>
+          <Button variant="dark" className="btn-lg" onClick={cancelTest}>Close</Button>
         </Modal.Footer>
       </Modal>
     );

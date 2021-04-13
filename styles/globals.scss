@@ -130,10 +130,43 @@ a {
 }
 
 .language-switch {
-    .active {
-        background: #222;
-        color: #fff;
+    display: flex;
+    align-items: center;
+
+    svg {
+        width: 20px;
     }
+
+    .dropdown-toggle {
+        display: flex;
+        align-items: center;
+
+        span {
+            margin-left: 10px;
+        }
+    }
+
+    .dropdown-menu {
+        width: 90px;
+        min-width: auto;
+        text-align: center;
+
+        a {
+            &:active {
+                background-color: #e9ecef;
+                color: #212529;
+            }
+        }
+    }
+
+    // .dropdown {
+    //     margin-left: 10px;
+    // }
+
+    // .dropdown-menu {
+    // width: 60px;
+    // text-align: center;
+    // }
 }
 
 .filter {

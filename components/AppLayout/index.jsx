@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import { Container, Nav } from 'react-bootstrap';
+import { Container, DropdownButton, Dropdown } from 'react-bootstrap';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGlobeAmericas } from '@fortawesome/free-solid-svg-icons'
 
 export default function AppLayout({children}) {
     const [activeLanguage, setActiveLanguage] = useState('en');
@@ -19,20 +22,21 @@ export default function AppLayout({children}) {
                         </div>
 
                         <div className="language-switch">
-                        <Nav
-                            activeKey={activeLanguage}
-                            onSelect={(selectedKey) => setActiveLanguage(selectedKey)}
+                            
+                            <Dropdown
+                                onSelect={(selectedKey) => setActiveLanguage(selectedKey)}
+                                
                             >
-                            <Nav.Item>
-                                <Nav.Link eventKey="en">EN</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="uk">UK</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="ru">RU</Nav.Link>
-                            </Nav.Item>
-                            </Nav>
+                                <Dropdown.Toggle id="dropdown-custom-1" variant="light">
+                                    <FontAwesomeIcon icon={faGlobeAmericas} size="xs" />
+                                    <span>{activeLanguage.toUpperCase()}</span>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu align="right">
+                                    {activeLanguage !== 'en' ? <Dropdown.Item eventKey="en">EN</Dropdown.Item> : ""}
+                                    {activeLanguage !== 'uk' ? <Dropdown.Item eventKey="uk">UK</Dropdown.Item> : ""}
+                                    {activeLanguage !== 'ru' ? <Dropdown.Item eventKey="ru">RU</Dropdown.Item> : ""}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </div>
                     </div>
                 </Container>
