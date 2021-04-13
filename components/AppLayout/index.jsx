@@ -1,11 +1,19 @@
-import React, { useState } from 'react'
-import { Container, DropdownButton, Dropdown } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react'
+import { Container, Dropdown } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobeAmericas } from '@fortawesome/free-solid-svg-icons'
 
+import { useTranslation } from 'react-i18next';
+
 export default function AppLayout({children}) {
     const [activeLanguage, setActiveLanguage] = useState('en');
+    const { t, i18n } = useTranslation();
+
+    useEffect(() => {
+        i18n.changeLanguage(activeLanguage);
+    }, [activeLanguage])
+
     return (
         <div className="page">
             <div className="page__header">
@@ -49,7 +57,7 @@ export default function AppLayout({children}) {
             <div className="page__footer">
                 <Container fluid="sm">
                     <p className="developer-link">
-                        developed by <a href="https://www.linkedin.com/in/sergey-manuliak-1579a8a7/" target="_blank" rel="noopener nofollow">S.Manuliak</a>
+                        {t('developedBy')} <a href="https://www.linkedin.com/in/sergey-manuliak-1579a8a7/" target="_blank" rel="noopener nofollow">S.Manuliak</a>
                     </p>
                 </Container>
             </div>

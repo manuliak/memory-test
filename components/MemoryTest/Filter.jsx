@@ -2,12 +2,16 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Row, Col, Button, Badge, Collapse } from 'react-bootstrap'
 import Slider from 'rc-slider'
 
+import { useTranslation } from 'react-i18next'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSlidersH} from '@fortawesome/free-solid-svg-icons'
 
 import { TestContext } from '../../context/test/testContext'
 
 export default function Filter () {
+    const { t, i18n } = useTranslation();
+
     const {
         gridSize,
         digitsNumber,
@@ -83,7 +87,7 @@ export default function Filter () {
                                 aria-expanded={openFilter}
                             >
                                 <span>
-                                    Test options
+                                    {t('testOptionsButtonLabel')}
                                 </span>
                                 <FontAwesomeIcon icon={faSlidersH} size="xs" />
                             </Button>
@@ -98,7 +102,7 @@ export default function Filter () {
                             <div className="filter-item">
                                 <div className="filter-item__head">
                                     <h5>
-                                        Grid size <Badge variant="info">{marks1[gridSize]}</Badge>
+                                        {t('filterGridSizeTitle')} <Badge variant="info">{marks1[gridSize]}</Badge>
                                     </h5>
                                 </div>
                                 <div className="filter-item__field">
@@ -110,7 +114,7 @@ export default function Filter () {
                             <div className="filter-item">
                                 <div className="filter-item__head">
                                     <h5>
-                                        Number of buttons <Badge variant="info">{digitsNumber}</Badge>
+                                        {t('filterGridButtonsNumberTitle')} <Badge variant="info">{digitsNumber}</Badge>
                                     </h5>
                                 </div>
                                 <div className="filter-item__field">
@@ -122,7 +126,7 @@ export default function Filter () {
                             <div className="filter-item">
                                 <div className="filter-item__head">
                                     <h5>
-                                        Time to remember <Badge variant="info">{marks3[timeToRemember]}</Badge>
+                                        {t('filterGridTimeToRememberTitle')} <Badge variant="info">{marks3[timeToRemember]}</Badge>
                                     </h5>
                                 </div>
                                 <div className="filter-item__field">

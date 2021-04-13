@@ -3,11 +3,15 @@ import { Modal, Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBomb, faStopwatch } from '@fortawesome/free-solid-svg-icons'
 
+import { useTranslation } from 'react-i18next'
+
 import convertTime from '../../helpers/convertTime'
 
 import { TestContext } from '../../context/test/testContext'
 
 export default function ResultModal() {
+  const { t, i18n } = useTranslation();
+
   const {
     modalShow,
     cancelTest,
@@ -26,7 +30,7 @@ export default function ResultModal() {
       >
         <Modal.Header closeButton className="align-items-center">
           <Modal.Title id="contained-modal-title-vcenter">
-            Your result
+            {t('resultModalTitle')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -36,19 +40,19 @@ export default function ResultModal() {
                         <FontAwesomeIcon icon={faBomb} size="xs" />
                         <span>{failures}</span>
                     </p>
-                    <p className="result-data__label">Failures</p>
+                    <p className="result-data__label">{t('resultFailuresTitle')}</p>
                 </div>
                 <div className="result-data">
                     <p className="result-data__value">
                         <FontAwesomeIcon icon={faStopwatch} size="xs" />
                         <span>{convertTime(finishTime - startTime)}</span>
                     </p>
-                    <p className="result-data__label">Answer time</p>
+                    <p className="result-data__label">{t('resultAnswerTimeTitle')}</p>
                 </div>
             </div>
         </Modal.Body>
         <Modal.Footer >
-          <Button variant="dark" className="btn-lg" onClick={cancelTest}>Close</Button>
+          <Button variant="dark" className="btn-lg" onClick={cancelTest}>{t('resultButtonLabel')}</Button>
         </Modal.Footer>
       </Modal>
     );

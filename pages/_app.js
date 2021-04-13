@@ -4,6 +4,8 @@ import '../styles/globals.scss'
 import AppLayout from '../components/AppLayout'
 import { TestState } from '../context/test/TestState'
 
+import '../translations/i18n';
+
 function MyApp({ Component, pageProps }) {
   return (
     <TestState>

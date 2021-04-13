@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
 import { Button } from 'react-bootstrap'
 
+import { useTranslation } from 'react-i18next'
+
 import { TestContext } from '../../context/test/testContext'
 
 import PlaceholderGrid from './PlaceholderGrid'
@@ -9,6 +11,7 @@ import ResultModal from './ResultModal'
 import Filter from './Filter'
 
 export default function MemoryTest() {
+    const { t, i18n } = useTranslation();
 
     const {
         startTest,
@@ -48,9 +51,9 @@ export default function MemoryTest() {
             <div className={`test__controls d-flex justify-content-center ${modalShow ? 'test__controls--hidden' : ''}`}>
                 {
                     startTime ? (
-                        <Button variant="danger" className="btn-lg" onClick={() => cancelTest()}><span>Cancel Test</span></Button>
+                        <Button variant="danger" className="btn-lg" onClick={() => cancelTest()}><span>{t('cancelButtonLabel')}</span></Button>
                     ) : (
-                        <Button variant="dark" className="btn-lg" onClick={() => startTest()}><span>Start Test</span></Button>
+                        <Button variant="dark" className="btn-lg" onClick={() => startTest()}><span>{t('playButtonLabel')}</span></Button>
                     )
                 }
             </div>
