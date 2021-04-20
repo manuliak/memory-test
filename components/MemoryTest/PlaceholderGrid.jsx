@@ -1,11 +1,11 @@
-import React, { useContext } from 'react'
-import { TestContext } from '../../context/test/testContext'
+import React from 'react'
+import { useTest } from '../../context/TestContext'
 
 export default function PlaceholderGrid () {
     const {
         gridSize,
         layoutContainerWidth,
-    } = useContext(TestContext);
+    } = useTest();
 
     const gridMap = [];
 

@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { TestContext } from '../../context/test/testContext'
+import React from 'react'
+import { useTest } from '../../context/TestContext'
 
 export default function TestGrid () {
     const {
@@ -11,7 +11,7 @@ export default function TestGrid () {
         buttonVisibilityStatus,
         error,
         checkAnswer
-    } = useContext(TestContext);
+    } = useTest();
 
     return (
         <div className={`test-grid test-grid--size-${Math.sqrt(gridSize)} ${modalShow ? 'test-grid--hidden' : ''}`}>

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef, useContext } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Button } from 'react-bootstrap'
 
 import { useTranslation } from 'react-i18next'
 
-import { TestContext } from '../../context/test/testContext'
+import { useTest } from '../../context/TestContext'
 
 import PlaceholderGrid from './PlaceholderGrid'
 import TestGrid from './TestGrid'
@@ -19,7 +19,7 @@ export default function MemoryTest() {
         startTime,
         modalShow,
         setLayoutContainerWidth
-    } = useContext(TestContext);
+    } = useTest();
 
     const layoutContainer = useRef(null);
 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBomb, faStopwatch } from '@fortawesome/free-solid-svg-icons'
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import convertTime from '../../helpers/convertTime'
 
-import { TestContext } from '../../context/test/testContext'
+import { useTest } from '../../context/TestContext'
 
 export default function ResultModal() {
   const { t, i18n } = useTranslation();
@@ -18,7 +18,7 @@ export default function ResultModal() {
     failures,
     startTime,
     finishTime,
-  } = useContext(TestContext);
+  } = useTest();
 
     return (
       <Modal

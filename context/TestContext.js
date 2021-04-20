@@ -1,9 +1,14 @@
-import React, { useState, useContext } from 'react'
-import { TestContext } from './testContext'
+import React, { useState, useContext, createContext } from 'react'
 import useSound from 'use-sound';
 
-import shuffleArray from '../../helpers/shuffleArray'
-import randomUniqueNum from '../../helpers/randomUniqueNum'
+import shuffleArray from '../helpers/shuffleArray'
+import randomUniqueNum from '../helpers/randomUniqueNum'
+
+const TestContext = createContext();
+
+export function useTest () {
+    return useContext(TestContext);
+}
 
 export const TestState = ({children}) => {
     const [layoutContainerWidth, setLayoutContainerWidth] = useState(0);

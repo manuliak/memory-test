@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col, Button, Badge, Collapse } from 'react-bootstrap'
 import Slider from 'rc-slider'
 
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSlidersH} from '@fortawesome/free-solid-svg-icons'
 
-import { TestContext } from '../../context/test/testContext'
+import { useTest } from '../../context/TestContext'
 
 export default function Filter () {
     const { t, i18n } = useTranslation();
@@ -19,7 +19,7 @@ export default function Filter () {
         setTimeToRemember,
         timeToRemember,
         setGridSize
-    } = useContext(TestContext);
+    } = useTest();
 
     const [openFilter, setOpenFilter] = useState(false);
     const [slider2Marks, setSlider2Marks] = useState({});
