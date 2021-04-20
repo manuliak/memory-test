@@ -22,7 +22,7 @@ export default function Profile () {
             
             <Col xs lg="12">
                 {
-                    JSON.stringify(currentUser.uid)
+                    currentUser ? JSON.stringify(currentUser.uid) : ''
                 }
             </Col>
         </Row>
