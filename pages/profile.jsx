@@ -43,7 +43,7 @@ export default function Profile () {
 
     // console.log(currentUser);
 
-    return (
+    return !currentUser ? <>Profile</> : (
         <Row className="mt-50 justify-content-md-center">
             <Col xs lg="3">
                 <div className="profile__avatar">
