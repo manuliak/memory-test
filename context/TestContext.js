@@ -1,8 +1,11 @@
-import React, { useState, useContext, createContext } from 'react'
+import React, { useState, useEffect, useContext, createContext } from 'react'
 import useSound from 'use-sound';
+import axios from 'axios'
 
 import shuffleArray from '../helpers/shuffleArray'
 import randomUniqueNum from '../helpers/randomUniqueNum'
+
+import { useAuth } from '../context/AuthContext'
 
 const TestContext = createContext();
 
@@ -23,6 +26,10 @@ export const TestState = ({children}) => {
     const [finishTime, setFinishTime] = useState(null);
     const [gridSize, setGridSize] = useState(16);
     const [modalShow, setModalShow] = useState(false);
+    const [testData, setTestData] = useState(null);
+    const [statistic, setStatistic] = useState(null);
+
+    const { currentUser } = useAuth();
 
     const [errorSound] = useSound(
         './audio/incorrect.mp3',
@@ -63,7 +70,7 @@ export const TestState = ({children}) => {
         }, timeToRemember * 1000)
     }
 
-    const checkAnswer = (digit, disabled) => {
+    const checkAnswer = async (digit, disabled) => {
         if(buttonVisibilityStatus || disabled) return;
         
         setError(null);
@@ -91,10 +98,93 @@ export const TestState = ({children}) => {
             const clickedButtons = changedData.filter(button => button.clickStatus);
 
             if(clickedButtons.length === visibleDigits.length) {
-                setFinishTime(Date.now());
-                setModalShow(true);
+                const currentTime = Date.now();
+                setFinishTime(currentTime);
+
+                if(currentUser && currentUser.uid) {
+
+                    const responseNewTest = await saveTest(currentTime - startTime);
+
+                    if (responseNewTest.data.success) {
+                        setTestData(responseNewTest.data.data);
+
+                        const statisticResponse = await getStatistic();
+
+                        if (statisticResponse.data.success) {
+                            setStatistic(statisticResponse.data.data);
+                            setModalShow(true);
+                        } else {
+                            console.log(statisticResponse.status);
+                        }
+                    } else {
+                        console.log(responseNewTest.status);
+                    }
+                } else {
+                    setModalShow(true);
+                }
             }
         }
+    }
+
+    const saveTest = (answerTime) => {
+        const testOptions = {
+            uid: currentUser.uid,
+            grid_size: gridSize,
+            buttons_count: digitsNumber,
+            time_to_remember: timeToRemember,
+            failures: failures,
+            answer_time: answerTime
+        }
+
+        return axios.post('/api/tests', testOptions)
+    }
+
+    const getTests = (uid) => {
+        const testOptions = {
+            uid: uid,
+            is_visible: true
+        }
+        
+        return axios.get('/api/tests', { params: testOptions })
+    }
+
+    const getStatistic = () => {
+        const statisticOptions = {
+            grid_size: gridSize,
+            buttons_count: digitsNumber,
+            time_to_remember: timeToRemember,
+            is_visible: true
+        }
+
+        return axios.get('/api/statistic', { params: statisticOptions })
+    }
+
+    const updateStatistic = async () => {
+        await getStatistic()
+        .then(function (response) {
+            if(response.data.success) {
+                setStatistic(response.data.data);
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    const getTestPosition = () => {
+        let position = 0;
+        console.log('get position st', statistic);
+        console.log('get position ts', testData);
+        
+        if(statistic && testData) {
+            statistic.forEach((test, key) => {
+                if(test._id === testData._id) {
+                    position = key + 1
+                }
+            })
+        }
+
+        return position;
     }
 
     const cancelTest = () => {
@@ -107,7 +197,13 @@ export const TestState = ({children}) => {
         setStartTime(null);
         setFinishTime(null);
         setModalShow(false);
+        setTestData(null);
+        // setStatistic(null);
     }
+
+    useEffect(() => {    
+        updateStatistic();
+    }, [gridSize, digitsNumber, timeToRemember]);
 
     return (
         <TestContext.Provider value={{
@@ -128,7 +224,14 @@ export const TestState = ({children}) => {
             modalShow, setModalShow,
             startTest,
             checkAnswer,
-            cancelTest
+            cancelTest,
+            saveTest,
+            getStatistic,
+            testData, setTestData,
+            statistic, setStatistic,
+            getTestPosition,
+            getTests,
+            updateStatistic
         }}>{children}</TestContext.Provider>
     )
 }

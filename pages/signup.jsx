@@ -66,7 +66,7 @@ export default function SignUp () {
     }, [currentUser])
 
     return (
-        <Row className="m-50 justify-content-md-center">
+        <Row className="auth-container justify-content-md-center">
             
             <Col xs lg="4">
                 <Card>

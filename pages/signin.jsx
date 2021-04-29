@@ -55,7 +55,7 @@ export default function SignIn () {
     }, [currentUser])
 
     return (
-        <Row className="mt-50 justify-content-md-center">
+        <Row className="auth-container justify-content-md-center">
             <Col xs lg="4">
                 <Card>
                     <Card.Header className="d-flex justify-content-between align-items-center">

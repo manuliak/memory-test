@@ -18,8 +18,15 @@ export default function ResultModal() {
     failures,
     startTime,
     finishTime,
+    testData,
+    statistic,
+    getTestPosition
   } = useTest();
 
+  console.log('testData=>', testData);
+  console.log('statistic=>', statistic);
+
+  console.log(getTestPosition());
     return (
       <Modal
         show={modalShow}
@@ -35,20 +42,31 @@ export default function ResultModal() {
         </Modal.Header>
         <Modal.Body>
             <div className="result-modal__details d-flex justify-content-between">
-                <div className="result-data">
+              {
+                testData && statistic ? (
+                  <div className="result-data">
                     <p className="result-data__value">
                         <FontAwesomeIcon icon={faBomb} size="xs" />
-                        <span>{failures}</span>
+                        <span>{getTestPosition()}</span>
                     </p>
-                    <p className="result-data__label">{t('resultFailuresTitle')}</p>
-                </div>
-                <div className="result-data">
-                    <p className="result-data__value">
-                        <FontAwesomeIcon icon={faStopwatch} size="xs" />
-                        <span>{convertTime(finishTime - startTime)}</span>
-                    </p>
-                    <p className="result-data__label">{t('resultAnswerTimeTitle')}</p>
-                </div>
+                    <p className="result-data__label">Position</p>
+                  </div>
+                ) : ''
+              }
+              <div className="result-data">
+                  <p className="result-data__value">
+                      <FontAwesomeIcon icon={faBomb} size="xs" />
+                      <span>{failures}</span>
+                  </p>
+                  <p className="result-data__label">{t('resultFailuresTitle')}</p>
+              </div>
+              <div className="result-data">
+                  <p className="result-data__value">
+                      <FontAwesomeIcon icon={faStopwatch} size="xs" />
+                      <span>{convertTime(finishTime - startTime)}</span>
+                  </p>
+                  <p className="result-data__label">{t('resultAnswerTimeTitle')}</p>
+              </div>
             </div>
         </Modal.Body>
         <Modal.Footer >
