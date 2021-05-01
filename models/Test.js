@@ -4,8 +4,14 @@ const TestSchema = new mongoose.Schema({
     uid: {
         type: String
     },
-    options: {
-        type: mongoose.Schema.Types.ObjectId,
+    grid_size: {
+        type: Number
+    },
+    buttons_count: {
+        type: Number
+    },
+    time_to_remember: {
+        type: Number
     },
     failures: {
         type: Number
